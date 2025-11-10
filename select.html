@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThreeJS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap" rel="stylesheet">
+<style>
+body { margin: 0;}
+canvas { display: block; }
+#home{position: fixed; padding: 5px; top:12px; right:12px; z-index: 1000; pointer-events: auto; background-color: aquamarine;}
+h1{position: absolute; margin: 15px; color: beige;}
+h2{position: absolute; margin: 50px; color: blanchedalmond;} 
+h3{position: fixed; margin: 50px; color: beige; left: 15px; top: 30%;}
+h4{position: fixed;margin: 50px; color: bisque; left: 15px; top: 35%;}
+#main{font-style: italic;}
+
+</style>
+</head>
+
+<body>
+<div id="home">
+	<a href="home.html">🏠</a>
+</div>
+
+
+<div id="main">
+	<!-- <h1>This is a template</h1>
+	<h2>I just have it here to reference</h2>
+	<h3>Use it or don't</h3>
+	<h4>who ca</h4> -->
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/gsap.min.js"></script>
+
+
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setAnimationLoop(animate);
+    document.body.appendChild(renderer.domElement);
+
+    camera.position.z = 10;
+
+    /*
+
+    Cubes
+
+    The structure of the loop is taking advantage of the cycling of the 
+    negative and positive value combinations. This creates the cubes in 
+    groups of 3x3 grid along x and y, centered around 0,0
+
+    */
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const colors = [0xffffff, 0xffff00, 0x00ffff, 0xff0000, 0x00ff00, 0x0000ff, 0x800080, 0xff69b4];
+    const cubes = [];
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+    const positions = [-1, 0, 1];
+    let index = 1;
+    for (let x of positions) {
+        for (let y of positions) {
+            const cube = new THREE.Mesh(geometry, material.clone());
+            cube.name = `cube${index++}`;
+            cube.position.set(x, y, 1);
+            cube.userData = { defaultColor: 0x00ff00 };
+            scene.add(cube);
+            cubes.push(cube);
+        }
+    }
+
+    const textByCube = {
+        cube1: ["Text1"],
+        cube2: ["Text2"],
+        cube3: ["Text3"],
+        cube4: ["Text4"],
+        cube5: ["Text5"],
+        cube6: ["Text6"],
+        cube7: ["Text7"],
+        cube8: ["Text8"],
+        cube9: ["Text9"]
+    };
+
+    const behavior = {};
+    for (const cube of cubes) behavior[cube.name] = { rotating: false };
+
+    const info = document.createElement("div");
+    info.style.position = "fixed";
+    info.style.bottom = "12px";
+    info.style.left = "12px";
+    info.style.padding = "8px 12px";
+    info.style.background = "rgba(0,0,0,0.6)";
+    info.style.color = "#fff";
+    info.style.fontFamily = "monospace";
+    info.style.fontSize = "12px";
+    info.style.borderRadius = "6px";
+    info.style.pointerEvents = "none";
+    info.textContent = "click a cube…";
+    document.body.appendChild(info);
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let hoveredCube = null;
+    let colorIndex = 0;
+    let lastColorChange = 0;
+
+    window.addEventListener("mousemove", (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    window.addEventListener("click", () => {
+        raycaster.setFromCamera(mouse, camera);
+        const hit = raycaster.intersectObjects(cubes)[0];
+        if (!hit) return;
+        const c = hit.object;
+        behavior[c.name].rotating = !behavior[c.name].rotating;
+        if (!behavior[c.name].rotating) {
+            c.rotation.set(0, 0, 0);
+            c.material.color.set(c.userData.defaultColor);
+        }
+        const arr = textByCube[c.name] || [];
+        info.textContent = arr.length ? `${c.name}: [${arr.join(", ")}]` : `${c.name}: []`;
+    });
+
+    // hover animation timing: 20 colors per second = change every 50ms
+    function animate(time) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(cubes);
+
+        if (intersects.length > 0) {
+            const target = intersects[0].object;
+            if (hoveredCube !== target) {
+                hoveredCube = target;
+            }
+        } else {
+            //resets the cube when you take the cursor off
+            hoveredCube = null;
+        }
+
+        //set the time for the flash here
+        const active = new Set();
+        if (hoveredCube) active.add(hoveredCube);
+        for (const cube of cubes) if (behavior[cube.name].rotating) active.add(cube);
+
+        if (time - lastColorChange > 50) {
+            for (const cube of active) cube.material.color.set(colors[colorIndex]);
+            colorIndex = (colorIndex + 1) % colors.length;
+            lastColorChange = time;
+        }
+
+        for (const cube of active) {
+            cube.rotation.x += 0.05;
+            cube.rotation.y += 0.05;
+        }
+
+        for (const cube of cubes) {
+            if (!active.has(cube) && !behavior[cube.name].rotating) {
+                cube.material.color.set(cube.userData.defaultColor);
+            }
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    window.addEventListener("resize", () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+
+    const loop = () => {
+        renderer.render(scene, camera);
+        window.requestAnimationFrame(loop);
+    };
+    loop();
+</script>
+
+
+
+
+</script>
+</body>
+</html>

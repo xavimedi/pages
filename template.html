@@ -11,22 +11,65 @@
 
 <style>
 body {background-color: gray;}
-h1, h2, h3, h4, h5, h6 {color:black; text-align:center;}
+h1, h2, h3, h4, h5, h6 {color:black;}
+#home {position: fixed; padding: 5px; top:12px; right:12px; z-index: 1000; pointer-events: auto; background-color: aquamarine;}
 </style>
 </head>
 
 <body>
+
+	<div id="home">
+		<a href="home.html">🏠</a>
+	</div>
+
     
-<div>
-	<h1>Template</h1>
-	<h2>This is a template</h2>
-</div>
+	<div>
+		<h1>Template</h1>
+		<h2>This is a template</h2>
+	</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/gsap.min.js"></script>
 
 <script>
-    
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+// const renderer = new THREE.WebGLRenderer();
+// renderer.setSize( window.innerWidth, window.innerHeight );
+// renderer.setAnimationLoop( animate );
+// document.body.appendChild( renderer.domElement );
+
+// const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+// const cube = new THREE.Mesh( geometry, material );
+// scene.add( cube );
+
+// camera.position.z = 5;
+
+// function animate() {
+
+//   cube.rotation.x += 0.01;
+//   cube.rotation.y += 0.01;
+
+//   renderer.render( scene, camera );
+
+// }
+
+
+ // Controls
+    // window.addEventListener("keydown", (event) => {
+    //     switch (event.key) {
+    //         case "ArrowUp":
+    //             break;
+    //         case "ArrowRight":
+    //             break;
+    //         case "ArrowDown":
+    //             break;
+    //         case "ArrowLeft":
+    //             break;
+    //     }
+    // });
 </script>
 
 </body>

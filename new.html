@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background-color: black;}
+canvas { display: block; }
+#home{position: fixed; padding: 5px; top:12px; right:12px; z-index: 1000; pointer-events: auto; background-color: aquamarine;}
+#parts{display: grid;}
+#text{position: fixed; margin: 25%; padding: 50px; z-index: 1000; pointer-events: auto; background-color: rgb(127, 131, 255);}
+#answer{position: fixed; margin: 15%; padding: 5px; z-index: 1000;}
+h1{position: absolute; margin: 15px; color: beige;}
+h2{position: absolute; margin: 50px; color: blanchedalmond;} 
+h3{position: fixed; margin: 50px; color: beige; left: 15px; top: 30%;}
+h4{position: fixed;margin: 50px; color: bisque; left: 15px; top: 35%;}
+#main{font-style: italic;}
+
+</style>
+</head>
+
+<body>
+
+<div id="home">
+	<a href="home.html">🏠</a>
+</div>
+
+<div id="parts">
+
+<div id="text">
+	<input id="input" type="text" placeholder="type here" style="text-align: center;"/>
+</div>
+
+<div id="answer">
+	<h1 id="output">hi</h1>
+</div>
+
+</div>
+
+<script>
+
+function updateOutput(text){
+
+	if(text == "red"){
+		document.getElementById("output").textContent = "red";
+	}
+	else{
+		document.getElementById("output").textContent = "what?";
+	}
+	
+}
+
+const input = document.getElementById("input");
+
+input.addEventListener("keydown", (event)=>{
+	if(event.key === "Enter"){
+		const value = input.value;
+		updateOutput(value);
+		input.value = "";
+	}
+});
+
+</script>
+</body>
+</html>
